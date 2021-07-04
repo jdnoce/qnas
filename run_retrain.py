@@ -37,14 +37,14 @@ def main(**args):
     # It is important to merge the dicts with the evolved_params first, as they need to be
     # overwritten in case we are using one of the special train schemes.
     train_params = {**config.evolved_params['params'], **config.train_spec}
-    best_ind_tese = ['conv_5_1_512', 'conv_3_1_128', 'conv_3_1_512',
+    best_ind_tese = ['conv_3_1_256', 'conv_1_1_128', 'conv_5_1_64',
                      'conv_5_1_256',
-                     'avg_pool_2_2',
-                     'conv_3_1_256',
-                     'avg_pool_2_2',
-                     'conv_5_1_128',
-                     'avg_pool_2_2',
-                     'max_pool_2_2']
+                     'conv_3_1_128',
+                     'conv_5_1_512',
+                     'max_pool_2_2',
+                     'max_pool_2_2',
+                     'conv_3_1_512',
+                     'conv_1_1_256', 'conv_3_1_512', 'conv_5_1_512', 'avg_pool_2_2']
 
     # best_ind_tese = ['bv1p_3_1_128',
     #                  'bv1p_3_1_128',

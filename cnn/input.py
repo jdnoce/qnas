@@ -101,10 +101,13 @@ class DataSet(object):
         """
 
         if not threads:
-            if platform.system() == 'Windows':
+            if os.uname().sysname == 'Linux':
+                threads = len(os.sched_getaffinity(0))
+            elif platform.system() == 'Windows':
                 threads = len(psutil.Process().cpu_affinity())
             else:
-                threads = os.cpu_count()
+                print("CAIUUUUUUUUUUUUUUUUUUUUUU", os.uname().sysname)
+                exit(1)
 
         dataset = tf.data.TFRecordDataset(self.get_file_list(dataset_type))
         dataset = dataset.map(self.rec_parser, num_parallel_calls=threads)

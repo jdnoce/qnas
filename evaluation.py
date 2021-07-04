@@ -5,7 +5,7 @@
 """
 
 import time
-
+import random
 import numpy as np
 from mpi4py import MPI
 
@@ -55,9 +55,55 @@ class EvalPopulation(object):
         evaluations = np.empty(shape=(pop_size,))
 
         try:
-            self.send_data(decoded_params, decoded_nets, generation)
-
+            fn_new_dict = {
+                'conv_1_1_512': {'function': 'ConvBlock', 'params': {'kernel': 1, 'strides': 1, 'filters': 512},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_5_1_512': {'function': 'ConvBlock', 'params': {'kernel': 5, 'strides': 1, 'filters': 512},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_1_1_64': {'function': 'ConvBlock', 'params': {'kernel': 1, 'strides': 1, 'filters': 64},
+                                'prob': 1.0 / 3.0 / 12.0},
+                'conv_1_1_128': {'function': 'ConvBlock', 'params': {'kernel': 1, 'strides': 1, 'filters': 128},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_1_1_256': {'function': 'ConvBlock', 'params': {'kernel': 1, 'strides': 1, 'filters': 256},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_3_1_64': {'function': 'ConvBlock', 'params': {'kernel': 3, 'strides': 1, 'filters': 64},
+                                'prob': 1.0 / 3.0 / 12.0},
+                'conv_3_1_128': {'function': 'ConvBlock', 'params': {'kernel': 3, 'strides': 1, 'filters': 128},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_3_1_256': {'function': 'ConvBlock', 'params': {'kernel': 3, 'strides': 1, 'filters': 256},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_3_1_512': {'function': 'ConvBlock', 'params': {'kernel': 3, 'strides': 1, 'filters': 512},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_5_1_64': {'function': 'ConvBlock', 'params': {'kernel': 5, 'strides': 1, 'filters': 64},
+                                'prob': 1.0 / 3.0 / 12.0},
+                'conv_5_1_128': {'function': 'ConvBlock', 'params': {'kernel': 5, 'strides': 1, 'filters': 128},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'conv_5_1_256': {'function': 'ConvBlock', 'params': {'kernel': 5, 'strides': 1, 'filters': 256},
+                                 'prob': 1.0 / 3.0 / 12.0},
+                'max_pool_2_2': {'function': 'MaxPooling', 'params': {'kernel': 2, 'strides': 2},
+                                 'prob': 1.0 / 3.0 / 2.0},
+                'avg_pool_2_2': {'function': 'AvgPooling', 'params': {'kernel': 2, 'strides': 2},
+                                 'prob': 1.0 / 3.0 / 2.0},
+                'no_op': {'function': 'NoOp', 'params': {}, 'prob': 1.0 / 3.0}}
+            print("dicionario antes dos roles", self.fn_dict)
+            if generation == 0:
+                pass
+            elif generation % 25 == 0:
+                fn_list = ["add", "sub"]
+                choice = random.choice(fn_list)
+                if choice == "add":
+                    value = random.choice(list(fn_new_dict))
+                    print("valor a ser adicionado", value)
+                    self.fn_dict.update(fn_new_dict[value])
+                    print("SELF DICT", self.fn_dict)
+                else:
+                    print("SERA q vai popar")
+                    value = random.choice(list(self.fn_dict))
+                    print("valor a ser retirado", value)
+                    self.fn_dict.pop(value)
+                    print("dicionario depois de retirado", self.fn_dict)
             # After sending tasks, Master starts its own work...
+            self.send_data(decoded_params, decoded_nets, generation)
             evaluations[0] = train.fitness_calculation(id_num=f'{generation}_0',
                                                        data_info=self.data_info,
                                                        params={**self.train_params,
